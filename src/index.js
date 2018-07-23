@@ -20,7 +20,7 @@ socket.addEventListener('message', function(event) {
     console.log(message);
     if (message.type === 'enter') {
         if (!myName.getAttribute('data-nik')) {
-            myName.innerHTML = message.data.name;
+            myName.innerHTML = message.users[message.data.nik];
             myName.setAttribute('data-nik', message.data.nik);
         }
         updateListUser(message.users);
@@ -29,6 +29,11 @@ socket.addEventListener('message', function(event) {
     }
     if (message.type === 'close') {
         updateListUser(message.users);
+    }
+    if (message.type === 'error') {
+        loginFormName.setAttribute('placeholder', message.message);
+        loginFormNik.value = '';
+        loginFormNik.setAttribute('placeholder', message.message);
     }
 });
 
@@ -41,10 +46,11 @@ document.addEventListener('click', function(e) {
     let idElem = e.target.getAttribute('id');
 
     if (idElem === 'enterChat') {
-        sendEnter(
+        /*sendEnter(
             checkFullness(loginFormName), 
             checkFullness(loginFormNik)
-        ); 
+        ); */
+        sendEnter(loginFormName, loginFormNik); 
     }
 });
 
@@ -71,15 +77,19 @@ function updateListUser(list) {
     usersCount.innerHTML = countUsers;     
 }
 
-function sendEnter(name, nik) {
-    var message = {
-        type: 'enter',
-        data: {
-            name: name,
-            nik: nik
-        }
-    };
-
-    socket.send(JSON.stringify(message));
+function sendEnter(...fields) {
+    let dataObj = {};
+    let validation = {};
+    let message = {type: 'enter'};
     
+    for (let i of fields) {
+        let nameAttr = i.getAttribute('data-name');
+        let validAttr = i.getAttribute('data-valid');
+        dataObj[nameAttr] = i.value;
+        validation[i.getAttribute('id')] = validAttr;
+    }
+    message.data = dataObj;
+    message.valid = validation;
+    console.log(message);
+    socket.send(JSON.stringify(message));
 }
