@@ -9,9 +9,9 @@ const loginFormNik = document.querySelector('#loginFormNik'); // поле для
 const loadPhoto = document.querySelector('#loadPhoto'); // окно загрузки фото
 
 const myName = document.querySelector('#myName'); // имя пользователя залогиневшегося
+const userPhoto = document.querySelector('#userPhoto'); // фото пользователя залогиневшегося
 const usersCount = document.querySelector('#usersCount'); // количество пользователей в приложении
 const usersList = document.querySelector('#usersList'); // список пользователей в приложении
-
 
 console.log(socket);
 
@@ -19,9 +19,14 @@ socket.addEventListener('message', function(event) {
     const message = JSON.parse(event.data);
     console.log(message);
     if (message.type === 'enter') {
+        let photo = '/src/photo/no-photo.png';
         if (!myName.getAttribute('data-nik')) {
             myName.innerHTML = message.users[message.data.nik];
             myName.setAttribute('data-nik', message.data.nik);
+            if (message.data.photo) {
+                photo = message.data.photo;
+            }
+            userPhoto.setAttribute('src', photo);
         }
         updateListUser(message.users);
         popupWindow.classList.remove('chat-popup_show');
@@ -31,9 +36,17 @@ socket.addEventListener('message', function(event) {
         updateListUser(message.users);
     }
     if (message.type === 'error') {
-        loginFormName.setAttribute('placeholder', message.message);
-        loginFormNik.value = '';
-        loginFormNik.setAttribute('placeholder', message.message);
+        for (let i in message.valid) {
+            const FieldName = document.querySelector(`#${i}`);
+            if (message.valid[i] !== 1) {
+                FieldName.setAttribute('placeholder', message.valid[i]); 
+                FieldName.classList.add('error');   
+                FieldName.value = '';
+            } else {
+                FieldName.setAttribute('placeholder', ''); 
+                FieldName.classList.remove('error');   
+            }
+        }
     }
 });
 
@@ -46,10 +59,6 @@ document.addEventListener('click', function(e) {
     let idElem = e.target.getAttribute('id');
 
     if (idElem === 'enterChat') {
-        /*sendEnter(
-            checkFullness(loginFormName), 
-            checkFullness(loginFormNik)
-        ); */
         sendEnter(loginFormName, loginFormNik); 
     }
 });
@@ -78,18 +87,16 @@ function updateListUser(list) {
 }
 
 function sendEnter(...fields) {
-    let dataObj = {};
-    let validation = {};
-    let message = {type: 'enter'};
+    let message = {
+        type: 'enter',
+        data: {},
+        valid: {}
+    };
     
     for (let i of fields) {
         let nameAttr = i.getAttribute('data-name');
-        let validAttr = i.getAttribute('data-valid');
-        dataObj[nameAttr] = i.value;
-        validation[i.getAttribute('id')] = validAttr;
+        message.data[nameAttr] = i.value;
+        message.valid[i.getAttribute('id')] = nameAttr;
     }
-    message.data = dataObj;
-    message.valid = validation;
-    console.log(message);
     socket.send(JSON.stringify(message));
 }

@@ -24,23 +24,39 @@ function startWebSocketServer(client){
             const message = JSON.parse(messageData);
             connectionsToSend = connections;
             collectionUsers.findOne({nik: message.data.nik}, function(err, result){
+                
                 if (message.type === 'enter') {
-                    if (!message.data.name) {
-                        message.type = 'error';
-                        message.message = 'Заполните поле';    
-                    } else if (!message.data.nik){
-                        message.type = 'error'; 
-                        message.message = 'Заполните поле';
-                    } else if (users[message.data.nik]) {
-                        message.type = 'error';
-                        message.message = 'Заполните поле';    
-                    } else {
+                    for (let i in message.valid) {
+                        let valueField = message.data[message.valid[i]];
+                        if (message.valid[i] === 'nik' && users[valueField]) {
+                            message.valid[i] = 'Такой пользователь авторизован'; 
+                            message.type = 'error'; 
+                        } else
+                        if (!message.data[message.valid[i]]) {
+                            message.valid[i] = 'Заполните поле'; 
+                            message.type = 'error';   
+                        } else {
+                            message.valid[i] = 1;
+                        }
+                        //console.log(message.valid[i]);
+                    }
+                    if (message.type !== 'error') {
                         users[message.data.nik] = message.data.name;
                         connection.name = message.data.nik;
+                        if (result) {
+                            message.data.photo = result.photo;
+                            console.log(result.photo);
+                        } else {
+                            collectionUsers.insertOne(message.data, function(err, result){
+                                if(err){ 
+                                    return console.log(err);
+                                }
+                            });
+                        }                        
                     }
                 }
 
-                
+                console.log(message);
                 message.users = users;
                 messageData = JSON.stringify(message);
                 connectionsToSend.forEach(connect => {
