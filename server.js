@@ -17,7 +17,7 @@ function startWebSocketServer(client){
     var connectionsToSend;
 
     wss.on('connection', function (connection) {
-        //connection.send('Start!!!');
+        //console.log(connection);
 
         connections.push(connection);
         connection.on('message', messageData => {
@@ -56,6 +56,11 @@ function startWebSocketServer(client){
                     }
                 }
 
+                if (message.type === 'restoreEnter') {
+                    users[message.data.nik] = message.data.name;
+                    connection.name = message.data.nik;    
+                }
+
                 console.log(message);
                 message.users = users;
                 messageData = JSON.stringify(message);
@@ -77,15 +82,19 @@ function startWebSocketServer(client){
             let message = {type: 'close'}
             message.users = users;
             messageData = JSON.stringify(message);
-            connectionsToSend.forEach(connect => {
-                connect.send(messageData, error => {
-                    if (error) {
-                        connections = connections.filter(current => {
-                            return current !== connect;
-                        });
-                    }
+            console.log(connectionsToSend);
+            if (connectionsToSend) {
+                connectionsToSend.forEach(connect => {
+                    connect.send(messageData, error => {
+                        if (error) {
+                            connections = connections.filter(current => {
+                                return current !== connect;
+                            });
+                        }
+                    });
                 });
-            });
+            }
+            
             console.log(connection.name);
             connections = connections.filter((current, i) => {            
                 return current !== connection;
