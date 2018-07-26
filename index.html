@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <title>Title</title>
         <link rel="stylesheet" href="/src/app.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.10/handlebars.js"></script>
     </head>
     <body>
         <div id="popupWindow" class="chat-popup">
@@ -52,7 +53,7 @@
                         </div>
                         <div class="chat__participants participants">
                             <div class="participants__head">
-                            Участники<span id="usersCount" class="participants__count">0</span></div>
+                            Онлайн<span id="usersCount" class="participants__count">0</span></div>
                             <ul id="usersList" class="participants__list">
                                 
                             </ul>
@@ -84,7 +85,7 @@
                                         <input class="leave-message__input" type="text" placeholder="Введите сообщение">
                                     </div>
                                     <div class="leave-message__button-box">
-                                        <div class="leave-message__button button">Отправить</div>
+                                        <div id='sendMessage' class="leave-message__button button">Отправить</div>
                                     </div>
                                 </div>
                             </div>
@@ -93,6 +94,12 @@
                 </div>
             </div>
         </div> 
+
+        <script id="tmp-users" type="text/x-handlebars-template">
+            {{#each items}}
+            <li id='{{idUser}}' class="participants__item">{{nameUser}}</li>
+            {{/each}}
+        </script>
  
     </body>
 </html>
