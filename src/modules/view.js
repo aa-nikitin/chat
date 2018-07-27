@@ -1,15 +1,12 @@
     const popupWindow = document.querySelector('#popupWindow'); // popup окно
 
-    const loginForm = document.querySelector('#loginForm'); // форма авторизации
-    const loginFormName = document.querySelector('#loginFormName'); // поле для ввода ФИО
-    const loginFormNik = document.querySelector('#loginFormNik'); // поле для ввода ника
+    const messageContainer = document.querySelector('#messageContainer'); // контейнер сообщений
+    const messageList = document.querySelector('#messageList'); // список сообщений
 
-    const loadPhoto = document.querySelector('#loadPhoto'); // окно загрузки фото
-
-    const myName = document.querySelector('#myName'); // имя пользователя залогиневшегося
-    const userPhoto = document.querySelector('#userPhoto'); // фото пользователя залогиневшегося
     const usersCount = document.querySelector('#usersCount'); // количество пользователей в приложении
     const usersList = document.querySelector('#usersList'); // список пользователей в приложении
+
+    const typing = document.querySelector('#typingMessage'); // пользователь печатает
 
 export default {
     
@@ -62,23 +59,49 @@ export default {
         usersCount.innerHTML = usersOnline.length; 
     },
 
+    renderMessage(message) { // отрисовка пользователей онлайн
+        
+        const tmpMessage = this.render('tmp-message', message);
+        messageList.innerHTML += tmpMessage;
+        messageContainer.scrollTop = messageContainer.scrollHeight;
+    },
+
+    renderTyping(timer, message) { // отрисовка пользователей онлайн
+        
+        typing.classList.add('typing-visible');
+        typing.textContent = `${message} печатает...`;
+
+        clearTimeout(timer);
+        return setTimeout(() => typing.classList.remove('typing-visible'), 1000);
+    },
+
     attr(idElement, name, value) { // чтение и запись атрибута
         const element = document.querySelector(`#${idElement}`);
         
-        if (value) {
+        if (value !== undefined) {
             element.setAttribute(name, value);
         } else {
             return element.getAttribute(name);
         }
     },
 
-    getValueField(idElement) { // чтение значения inputa
+    valueField(idElement, valueElement) { // чтение значения inputa
         let element = document.querySelector(`#${idElement}`);
-        return element.value
+        if (valueElement !== undefined) {
+            element.value = valueElement;
+        } else {
+            return element.value;
+        }
     },
 
-    setValueElement(idElement, valueElement) { // запись в элемент
+    valueElement(idElement, valueElement) { // запись в элемент
         let element = document.querySelector(`#${idElement}`);
-        element.innerHTML = valueElement;
+
+        if (valueElement !== undefined) {
+            element.innerHTML = valueElement;
+        } else {
+            return element.innerHTML;
+        }
+        
     }
 };

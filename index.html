@@ -7,16 +7,21 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.10/handlebars.js"></script>
     </head>
     <body>
+        <style>
+            .chat-user__img {
+                cursor: pointer;
+            }
+        </style>
         <div id="popupWindow" class="chat-popup">
             <div id="loginForm" class="chat-popup__box">
                 <div class="chat-popup__head">Авторизация</div>
                 <div class="chat-popup__body">
                     <div class="chat-form">
                         <div class="chat-form__field">
-                            <input id="loginFormName" class="chat-form__input" type="text" data-valid="empty" data-name="name" placeholder="ФИО">
+                            <input id="loginFormName" class="chat-form__input" type="text" data-name="name" placeholder="ФИО">
                         </div>
                         <div class="chat-form__field">
-                            <input id="loginFormNik" class="chat-form__input" type="text" data-valid="empty,enter" data-name="nik" placeholder="Ник">
+                            <input id="loginFormNik" class="chat-form__input" type="text" data-name="nik" placeholder="Ник">
                         </div>
                     </div>
                     <div class="chat-popup__buttons">
@@ -31,7 +36,7 @@
                         <div class="chat-load-photo__photo">  </div>
                     </div>
                     <div class="chat-popup__buttons">
-                        <div class="chat-popup__button button">Отмена</div>
+                        <div id="loadPhotoCancel" class="chat-popup__button button">Отмена</div>
                         <div class="chat-popup__button button">Загрузить</div>
                     </div>
                 </div>
@@ -45,7 +50,10 @@
             <div class="container chat__container">
                 <div class="row chat__row">
                     <div class="col-sm-3 chat__left">
-                        <div class="chat__user chat-user"><a class="chat-user__photo" href="#"> <img id="userPhoto" class="chat-user__img" src="src/photo/no-photo.png" alt=""></a>
+                        <div class="chat__user-settings">
+                            <a id="chatExit" class="chat__exit"></a>
+                        </div>
+                        <div class="chat__user chat-user"><a class="chat-user__photo"> <img id="userPhoto" class="chat-user__img" src="src/photo/no-photo.png" alt=""></a>
                             <div class="chat-user__descr"> 
                             <div id="myName" class="chat-user__name chat-user_name_big chat-user_color_white">
                                 Добро пожаловать!!!</div>
@@ -61,28 +69,16 @@
                     </div>
                     <div class="col-sm-9 chat__right">
                         <div class="chat__dialog-window dialog-window">
-                            <div class="dialog-window__top">
-                                <div class="chat-users">
-                                    <div class="chat-users__item chat-user">
-                                        <div class="chat-user__photo"> <img class="chat-user__img" src="src/photo/no-photo.png" alt=""></div>
-                                        <div class="chat-user__descr"> 
-                                            <div class="chat-user__name">Александр Никитин<span class="chat-user__time">22:17 </span></div>
-                                            <div class="chat-user__message">Привет!!!</div>
-                                        </div>
-                                    </div>
-                                    <div class="chat-users__item chat-user">
-                                        <div class="chat-user__photo"> <img class="chat-user__img" src="src/photo/no-photo.png" alt=""></div>
-                                        <div class="chat-user__descr"> 
-                                            <div class="chat-user__name">Александр Никитин<span class="chat-user__time">22:17 </span></div>
-                                            <div class="chat-user__message">Привет!!!</div>
-                                        </div>
-                                    </div>
+                            <div id="messageContainer" class="dialog-window__top">
+                                <div id="messageList" class="chat-users">
+
                                 </div>
                             </div>
                             <div class="dialog-window__bottom">
+                                <div class="typing-message" id="typingMessage"></div>
                                 <div class="leave-message">
                                     <div class="leave-message__message-box">
-                                        <input class="leave-message__input" type="text" placeholder="Введите сообщение">
+                                        <input id='textMessage' data-name="text" class="leave-message__input" type="text" placeholder="Введите сообщение">
                                     </div>
                                     <div class="leave-message__button-box">
                                         <div id='sendMessage' class="leave-message__button button">Отправить</div>
@@ -99,6 +95,16 @@
             {{#each items}}
             <li id='{{idUser}}' class="participants__item">{{nameUser}}</li>
             {{/each}}
+        </script>
+
+        <script id="tmp-message" type="text/x-handlebars-template">
+            <div class="chat-users__item chat-user">
+                <div class="chat-user__photo"> <img class="chat-user__img" src="{{photo}}" alt=""></div>
+                <div class="chat-user__descr"> 
+                    <div class="chat-user__name">{{from}}<span class="chat-user__time">{{time}}</span></div>
+                    <div class="chat-user__message">{{data.text}}</div>
+                </div>
+            </div>
         </script>
  
     </body>

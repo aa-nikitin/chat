@@ -4,11 +4,12 @@ import view from './view.js';
 const socket = new WebSocket("ws://localhost:9090");
 var thisName;
 
+let typingTimer = 0;
+const typing = document.querySelector('#typingMessage');
+
 function onMessage() { // отслеживаем пришедшие с сервера ответы
     socket.addEventListener('message', event => {
         const message = JSON.parse(event.data);
-
-        console.log(message);
 
         switch(message.type) {
             case 'enter': 
@@ -21,10 +22,13 @@ function onMessage() { // отслеживаем пришедшие с серв�
                 authorization(message);
                 break;
             case 'error':  
-                fieldsValidation(message.valid)
+                fieldsValidation(message.valid);
                 break;
             case 'message':  
-                console.log('message');
+                view.renderMessage(message);
+                break;
+            case 'typing':
+                typingTimer = view.renderTyping(typingTimer, message.from);                
                 break;
             default:
                 break;
@@ -61,9 +65,10 @@ function updateListUser(list) { // обновление списка польз�
     view.renderUsersOnline(itemUsers);    
 }
 
-function sendEnter(...fields) { // отправка запроса(сообщения)
+function sendEnter(typeMsg, ...fields) { // отправка запроса(сообщения)
     let message = {
-        type: 'enter',
+        type: typeMsg,
+        from : view.valueElement('myName'),
         data: {},
         valid: {}
     };
@@ -71,17 +76,37 @@ function sendEnter(...fields) { // отправка запроса(сообще�
     for (let i of fields) {
         let nameAttr = view.attr(i, 'data-name');
 
-        message.data[nameAttr] = view.getValueField(i);
+        message.data[nameAttr] = view.valueField(i);
         message.valid[view.attr(i, 'id')] = nameAttr;
     }
+
+    if (typeMsg === 'message') {
+        message.from = view.attr('myName', 'data-nik');
+        message.time = getTime();
+        message.photo = view.attr('userPhoto', 'src');  
+        if (view.valueField('textMessage')) {
+            view.valueField('textMessage', '');
+        }  else message.type = 'none';
+    }
+
     socket.send(JSON.stringify(message));
+}
+
+function getTime() { // формирует время отправки
+    let date = new Date();
+    return `${timeFormat(date.getHours())}:${timeFormat(date.getMinutes())}`;
+}
+
+function timeFormat(number) { // в двухзначный формат
+    return ((number < 10) ? '0' : '') + number;
 }
 
 function authorization(message) { // авторизация
     let photo = '/src/photo/no-photo.png';
+
     if (!thisName) {
         thisName = message.data.nik;
-        view.setValueElement('myName', message.users[message.data.nik])
+        view.valueElement('myName', message.users[message.data.nik])
         view.attr('myName', 'data-nik', message.data.nik);
         if (message.data.photo) {
             photo = message.data.photo;
@@ -103,8 +128,24 @@ function fieldsValidation(listFields) { // проверка полей на ва
     }
 }
 
+function loadPhoto() { // проверка полей на валидность
+    view.statePopup('loadPhoto', 'add');
+}
+
+function loadPhotoCancel() { // проверка полей на валидность
+    view.statePopup('loadPhoto', 'remove');
+}
+
+function quitChat(coockieName) { // проверка полей на валидность
+    model.delCookie(coockieName);
+    location.reload();
+}
+
 export default {
     sendEnter : sendEnter,
     onMessage : onMessage,
+    quitChat : quitChat,
+    loadPhoto : loadPhoto,
+    loadPhotoCancel : loadPhotoCancel,
     onOpen : onOpen
 }
