@@ -1,10 +1,13 @@
 var WebSocketServer = require('ws').Server;
 var wss = new WebSocketServer({ port: 9090 });
 const mongoClient = require("mongodb").MongoClient; 
-const url = "mongodb://localhost:27017/";
+var fs = require("fs");
+const url = "mongodb://user:qqqq0000@ds113713.mlab.com:13713/chat";
 
 mongoClient.connect(url, function(err, client){
     if(err) return console.log(err);
+
+    
 
     startWebSocketServer(client);
 });
@@ -15,6 +18,7 @@ function startWebSocketServer(client){
     var connections = [];
     var users = {};
     var connectionsToSend;
+    console.log(collectionUsers);
 
     wss.on('connection', function (connection) {
         //console.log(connection);
@@ -61,7 +65,27 @@ function startWebSocketServer(client){
                     connection.name = message.data.nik;    
                 }
 
-                console.log(message);
+                if (message.type === 'fileload') {
+                    console.log(result);
+                    if (message.f) {
+                        var img = message.f.replace(/^data:image\/\w+;base64,/, "");
+                        var buf = new Buffer(img, 'base64');
+                        fs.writeFile(`./src/photo/${message.data.nik}.jpg`, buf);
+                        message.photo = `./src/photo/${message.data.nik}.jpg`; 
+                        collectionUsers.updateOne(
+                            {nik: `${message.data.nik}`}, 
+                            { $set: {photo: `/src/photo/${message.data.nik}.jpg`}},
+                            function(err, result) {
+                                   
+                            }
+                        );   
+                    } else {
+                        message.type = 'error'; 
+                    }
+                    
+                }
+
+                
                 message.users = users;
                 messageData = JSON.stringify(message);
                 connectionsToSend.forEach(connect => {

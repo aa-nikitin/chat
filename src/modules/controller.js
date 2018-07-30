@@ -5,12 +5,11 @@ const socket = new WebSocket("ws://localhost:9090");
 var thisName;
 
 let typingTimer = 0;
-const typing = document.querySelector('#typingMessage');
 
 function onMessage() { // отслеживаем пришедшие с сервера ответы
     socket.addEventListener('message', event => {
         const message = JSON.parse(event.data);
-
+        console.log(message);  
         switch(message.type) {
             case 'enter': 
                 authorization(message);
@@ -29,6 +28,16 @@ function onMessage() { // отслеживаем пришедшие с серв�
                 break;
             case 'typing':
                 typingTimer = view.renderTyping(typingTimer, message.from);                
+                break;
+            case 'fileload':
+                if (thisName === message.nik) {
+                    const userCoockie = model.getCookie('userEnter'); 
+                    let messageCoockie = JSON.parse(userCoockie);
+                    model.delCookie('userEnter');
+                    view.attr('userPhoto', 'src', message.f);
+                    messageCoockie.data.photo = message.photo;
+                    document.cookie = `userEnter = ${JSON.stringify(messageCoockie)}`; 
+                }           
                 break;
             default:
                 break;
@@ -81,7 +90,7 @@ function sendEnter(typeMsg, ...fields) { // отправка запроса(со
     }
 
     if (typeMsg === 'message') {
-        message.from = view.attr('myName', 'data-nik');
+        message.from = view.valueElement('myName');
         message.time = getTime();
         message.photo = view.attr('userPhoto', 'src');  
         if (view.valueField('textMessage')) {
@@ -132,13 +141,25 @@ function loadPhoto() { // проверка полей на валидность
     view.statePopup('loadPhoto', 'add');
 }
 
-function loadPhotoCancel() { // проверка полей на валидность
+function loadPhotoCancel() { // закрыть форму с загрузкой фото
     view.statePopup('loadPhoto', 'remove');
 }
 
-function quitChat(coockieName) { // проверка полей на валидность
+function quitChat(coockieName) { // выход из чата
     model.delCookie(coockieName);
     location.reload();
+}
+
+function loadPhotoOnServer(file) { // загрузка фото на сервер
+    let message = {
+        type: 'fileload',
+        data : {},
+        nik : view.attr('myName', 'data-nik'),
+        f: file
+    };
+    message.data.nik = view.attr('myName', 'data-nik');
+    socket.send(JSON.stringify(message));
+    view.statePopup('loadPhoto', 'remove');
 }
 
 export default {
@@ -146,6 +167,7 @@ export default {
     onMessage : onMessage,
     quitChat : quitChat,
     loadPhoto : loadPhoto,
+    loadPhotoOnServer : loadPhotoOnServer,
     loadPhotoCancel : loadPhotoCancel,
     onOpen : onOpen
 }

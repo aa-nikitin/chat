@@ -8,8 +8,14 @@
     </head>
     <body>
         <style>
-            .chat-user__img {
+            .chat-user_cursor-pointer {
                 cursor: pointer;
+            }
+            .chat-load-photo__photo {
+                color: #c4c4c4;
+            }
+            .chat-load-photo__photo:before {
+                display: none;
             }
         </style>
         <div id="popupWindow" class="chat-popup">
@@ -33,11 +39,13 @@
                 <div class="chat-popup__head">Загрузка фото</div>
                 <div class="chat-popup__body">
                     <div class="chat-load-photo">
-                        <div class="chat-load-photo__photo">  </div>
+                        <div id="loadPhotoUser" draggable="false" class="chat-load-photo__photo">
+                            перетащите сюда фото
+                        </div>
                     </div>
                     <div class="chat-popup__buttons">
                         <div id="loadPhotoCancel" class="chat-popup__button button">Отмена</div>
-                        <div class="chat-popup__button button">Загрузить</div>
+                        <div id="loadPhotoOnServer" class="chat-popup__button button">Загрузить</div>
                     </div>
                 </div>
             </div>
@@ -53,7 +61,7 @@
                         <div class="chat__user-settings">
                             <a id="chatExit" class="chat__exit"></a>
                         </div>
-                        <div class="chat__user chat-user"><a class="chat-user__photo"> <img id="userPhoto" class="chat-user__img" src="src/photo/no-photo.png" alt=""></a>
+                        <div class="chat__user chat-user"><a class="chat-user__photo chat-user_cursor-pointer"> <img id="userPhoto" class="chat-user__img" src="src/photo/no-photo.png" alt=""></a>
                             <div class="chat-user__descr"> 
                             <div id="myName" class="chat-user__name chat-user_name_big chat-user_color_white">
                                 Добро пожаловать!!!</div>
