@@ -1,5 +1,0 @@
-{"sen1":{
-    "name": "asdu"
-}, 
-"sen2":"sss"
-}
