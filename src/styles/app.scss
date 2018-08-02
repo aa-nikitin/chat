@@ -1,0 +1,30 @@
+$white: #fff;
+$orange: #ff8663;
+
+$blue-light: #57e6e6;
+$blue: #2196f3;
+$navy: #226088;
+$yellow: #ffeb3b;
+$green: #5da130;
+$error-color: #ff0505;
+$font-color: #333333;
+$titles-color: $font-color;
+
+@import "layout/mixins.scss";
+@import "layout/fonts.scss";
+@import "layout/flexgrid.scss";
+@import "layout/base.scss";
+@import "layout/typography.scss";
+
+
+@import "components/chat-form.scss";
+@import "components/chat-load-photo.scss";
+@import "components/chat-popup.scss";
+@import "components/chat-user.scss";
+@import "components/chat-users.scss";
+@import "components/chat.scss";
+@import "components/dialog-window.scss";
+@import "components/leave-message.scss";
+@import "components/participants.scss";
+@import "components/substrate.scss";
+@import "components/typing-message.scss";

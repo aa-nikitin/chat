@@ -1,0 +1,34 @@
+.leave-message {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.leave-message__message-box {
+    width: 100%;
+}
+
+.leave-message__input {
+    width: 100%;
+    padding: 9px 15px;
+    outline: none;
+    border: 1px solid #f0f0f0;
+    border-radius: 4px;
+}
+
+@include placeholder('leave-message__input', #c4c4c4);
+
+
+.leave-message__input-error {
+    border-color: red;
+}
+
+@include placeholder('leave-message__input-error', red);
+
+.leave-message__button-box {
+    margin-left: 20px;
+}
+
+.leave-message__button {
+    padding: 8px 30px;
+}

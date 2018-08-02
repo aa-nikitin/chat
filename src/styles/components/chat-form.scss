@@ -1,0 +1,20 @@
+.chat-form {
+
+}
+
+.chat-form__field {
+    margin-bottom: 15px;
+    &:last-child {
+        margin-bottom: 0px;
+    }
+}
+
+.chat-form__input {
+    width: 100%;
+    padding: 9px 15px;
+    outline: none;
+    border: 1px solid #f0f0f0;  
+    border-radius: 30px; 
+}
+
+@include placeholder('chat-form__input', #c4c4c4);

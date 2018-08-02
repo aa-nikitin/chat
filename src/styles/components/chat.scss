@@ -1,0 +1,34 @@
+.chat {
+    height: 100%; 
+    position: relative;   
+}
+
+.chat__container {
+    height: 100%; 
+    position: relative;
+    z-index: 2;
+}
+
+.chat__row {
+    height: 100%; 
+}
+
+.chat__left {
+    background: #ff8663;    
+}
+
+.chat__right {
+    background: #ffffff;    
+}
+
+.chat__user {
+    padding: 15px 0px 10px;
+}
+
+.chat__participants {
+    margin-top: 10px;
+}
+
+.chat__dialog-window {
+    
+}

@@ -1,0 +1,15 @@
+.dialog-window {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.dialog-window__top {
+    max-height: 100%;
+    overflow-y: auto;   
+}
+
+.dialog-window__bottom {
+    padding: 20px 0px;   
+}

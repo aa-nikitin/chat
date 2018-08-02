@@ -1,0 +1,50 @@
+.chat-popup {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    background: rgba($color: #000000, $alpha: 0.2);
+    z-index: 5;
+    display:none;
+}
+
+.chat-popup__box {
+    position: absolute;
+    @include centered();
+    background: #f0f0f0;
+    padding: 10px;
+    border-radius: 10px;
+    width: 30%;
+    display:none;
+}
+
+.chat-popup_show {
+    display:block;
+}
+
+.chat-popup__body {
+    background: #fff;
+    padding: 20px 15px 15px;
+    border-radius: 10px;
+}
+
+.chat-popup__head {
+    font-size: 16px;
+    font-weight: 500;
+    padding: 5px 0px 10px;
+}
+
+.chat-popup__buttons  {
+    display: flex;
+    justify-content: flex-end; 
+    margin-top: 10px;   
+}
+
+.chat-popup__button {
+    padding: 8px 20px;
+    margin-left: 10px;
+    &:first-child {
+        margin-left: 0px;
+    }
+}

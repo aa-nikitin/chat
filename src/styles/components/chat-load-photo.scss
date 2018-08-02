@@ -1,0 +1,20 @@
+.chat-load-photo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chat-load-photo__photo {
+    width: 160px;
+    height: 160px;
+    padding: 10px;
+    border: dashed 1px #c4c4c4;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:before {
+        content: "перетащите сюда фото";
+        color: #c4c4c4;
+    }
+}

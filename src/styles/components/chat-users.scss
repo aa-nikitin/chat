@@ -1,0 +1,10 @@
+.chat-users {
+    padding: 20px 0px;
+}
+
+.chat-users__item {
+    margin-bottom: 25px;
+    &:last-child {
+        margin-bottom: 0px;
+    }   
+}

@@ -1,4 +1,9 @@
 import controller from './modules/controller.js';
+import './styles/app.scss';
+
+
+//import awesome from './fonts/fontawesome-webfont.woff';
+
 
 const textMessage = document.querySelector('#textMessage');
 
